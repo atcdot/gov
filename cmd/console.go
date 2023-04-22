@@ -67,8 +67,8 @@ func remove(version string) {
 	}
 }
 
-func clear() {
-	err := gov.Clear()
+func cleanup() {
+	err := gov.Cleanup()
 	if err != nil {
 		fmt.Println(err)
 	}

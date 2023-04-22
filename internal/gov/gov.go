@@ -208,7 +208,7 @@ func Remove(version string) error {
 	return nil
 }
 
-func Clear() error {
+func Cleanup() error {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)

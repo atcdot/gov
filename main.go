@@ -14,7 +14,7 @@ func main() {
 	command.AddCommand(cmd.NewInstallCmd())
 	command.AddCommand(cmd.NewRemoveCmd())
 	command.AddCommand(cmd.NewUseCmd())
-	command.AddCommand(cmd.NewClearCmd())
+	command.AddCommand(cmd.NewCleanupCmd())
 
 	err := command.Execute()
 	if err != nil {
