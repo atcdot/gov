@@ -1,4 +1,4 @@
-module gov
+module github.com/atcdot/gov
 
 go 1.20
 

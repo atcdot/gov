@@ -5,7 +5,7 @@ import (
 
 	"github.com/getlantern/systray"
 
-	"gov/internal/resources"
+	"github.com/atcdot/gov/internal/resources"
 )
 
 type GUIProgress struct {

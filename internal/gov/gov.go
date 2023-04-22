@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"gov/internal/dlsdk"
-	"gov/internal/version"
+	"github.com/atcdot/gov/internal/dlsdk"
+	"github.com/atcdot/gov/internal/version"
 )
 
 type VersionInstalled struct {

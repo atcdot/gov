@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"gov/internal/gui"
+	"github.com/atcdot/gov/internal/gui"
 )
 
 func NewGUICmd() *cobra.Command {

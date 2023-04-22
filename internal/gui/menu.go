@@ -6,11 +6,11 @@ import (
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
 
-	"gov/internal/dlsdk"
-	"gov/internal/gov"
-	"gov/internal/progress"
-	"gov/internal/resources"
-	"gov/internal/version"
+	"github.com/atcdot/gov/internal/dlsdk"
+	"github.com/atcdot/gov/internal/gov"
+	"github.com/atcdot/gov/internal/progress"
+	"github.com/atcdot/gov/internal/resources"
+	"github.com/atcdot/gov/internal/version"
 )
 
 func RunGUI() {

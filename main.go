@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"gov/cmd"
+	"github.com/atcdot/gov/cmd"
 )
 
 func main() {

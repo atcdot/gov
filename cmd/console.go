@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"gov/internal/gov"
-	"gov/internal/version"
+	"github.com/atcdot/gov/internal/gov"
+	"github.com/atcdot/gov/internal/version"
 )
 
 func listInstalled() {
