@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/atcdot/gov/internal/gov"
@@ -37,8 +38,17 @@ func listAvailable() {
 		regrouped[minorVersion] = append(regrouped[minorVersion], available)
 	}
 
-	for minor, group := range regrouped {
-		fmt.Printf(" - %s: %s\n", minor, strings.Join(group, ", "))
+	minorVersions := make([]string, 0)
+	for minorVersion := range regrouped {
+		minorVersions = append(minorVersions, minorVersion)
+	}
+
+	sort.SliceStable(minorVersions, func(i, j int) bool {
+		return minorVersions[i] > minorVersions[j]
+	})
+
+	for _, minor := range minorVersions {
+		fmt.Printf(" - %s: %s\n", minor, strings.Join(regrouped[minor], ", "))
 	}
 }
 
