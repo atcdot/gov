@@ -10,6 +10,10 @@ import (
 )
 
 func listInstalled() {
+	if !gov.IsInitialised() {
+		initialise()
+	}
+
 	ii, err := gov.ListInstalled()
 	if err != nil {
 		fmt.Println(err)
@@ -22,11 +26,19 @@ func listInstalled() {
 			fmt.Print(" (system)")
 		}
 
+		if installed.IsActive {
+			fmt.Print(" <-- active")
+		}
+
 		fmt.Println()
 	}
 }
 
 func listAvailable() {
+	if !gov.IsInitialised() {
+		initialise()
+	}
+
 	ai, err := gov.ListAvailable()
 	if err != nil {
 		fmt.Println(err)
@@ -53,6 +65,10 @@ func listAvailable() {
 }
 
 func install(version string) {
+	if !gov.IsInitialised() {
+		initialise()
+	}
+
 	bin, err := gov.Install(version)
 	if err != nil {
 		fmt.Println(err)
@@ -62,6 +78,10 @@ func install(version string) {
 }
 
 func use(version string) {
+	if !gov.IsInitialised() {
+		initialise()
+	}
+
 	bin, err := gov.Use(version)
 	if err != nil {
 		fmt.Println(err)
@@ -71,6 +91,10 @@ func use(version string) {
 }
 
 func remove(version string) {
+	if !gov.IsInitialised() {
+		initialise()
+	}
+
 	err := gov.Remove(version)
 	if err != nil {
 		fmt.Println(err)
@@ -79,6 +103,17 @@ func remove(version string) {
 
 func cleanup() {
 	err := gov.Cleanup()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func initialise() {
+	if gov.IsInitialised() {
+		return
+	}
+
+	err := gov.SaveActualVersion()
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -16,9 +16,10 @@ import (
 )
 
 type VersionInstalled struct {
-	Version string
-	Bin     string
-	IsMain  bool
+	Version  string
+	Bin      string
+	IsMain   bool
+	IsActive bool
 }
 
 func ListInstalled() ([]VersionInstalled, error) {
@@ -72,6 +73,14 @@ func ListInstalled() ([]VersionInstalled, error) {
 		}
 	}
 
+	activeBinPath, err := getActiveBinPath()
+	for i := range ii {
+		if ii[i].Bin == activeBinPath {
+			ii[i].IsActive = true
+			break
+		}
+	}
+
 	return ii, nil
 }
 
@@ -98,7 +107,7 @@ func Install(version string) (string, error) {
 
 	// install
 	{
-		cmd := exec.Command("go", "install", fmt.Sprintf("golang.org/dl/go%s@latest", version))
+		cmd := exec.Command(goBinCmdSystem, "install", fmt.Sprintf("golang.org/dl/go%s@latest", version))
 
 		var out bytes.Buffer
 		cmd.Stdout = &out
@@ -134,7 +143,7 @@ func Use(version string) (string, error) {
 	var bin string
 
 	for _, v := range vv {
-		if v.Version == version {
+		if v.Version == version || (version == "system" && v.IsMain) {
 			bin = v.Bin
 		}
 	}
@@ -155,7 +164,7 @@ func Use(version string) (string, error) {
 			fmt.Println(err)
 		}
 
-		fileContent := fmt.Sprintf("alias %s=%s\n", "go", bin)
+		fileContent := fmt.Sprintf("alias go=%s\n", bin)
 
 		_, err = f.Write([]byte(fileContent))
 		if err != nil {
@@ -164,6 +173,20 @@ func Use(version string) (string, error) {
 	}
 
 	return bin, nil
+}
+
+func IsInitialised() bool {
+	return fileExists(govSystemConfFilename) &&
+		fileExists(govAliasFilename)
+}
+
+func SaveActualVersion() error {
+	_, _, err := GetActualVersion()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func Remove(version string) error {
@@ -209,12 +232,12 @@ func Remove(version string) error {
 }
 
 func Cleanup() error {
-	dirname, err := os.UserHomeDir()
+	err := os.Remove(govSystemConfFilename)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
-	f, err := os.OpenFile(dirname+"/.gov", os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.FileMode(0644))
+	f, err := os.OpenFile(govAliasFilename, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.FileMode(0644))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -228,6 +251,10 @@ func Cleanup() error {
 }
 
 func GetActualVersion() (v string, goBin string, err error) {
+	if IsInitialised() {
+		return getSystemVersionFromFile()
+	}
+
 	goBin, err = which()
 	if err != nil {
 		return "", "", err
@@ -242,11 +269,15 @@ func GetActualVersion() (v string, goBin string, err error) {
 
 	v = version.ExtractFull(goBinVersion)
 
+	if err := setSystemVersionToFile(v, goBin); err != nil {
+		return "", "", err
+	}
+
 	return v, goBin, nil
 }
 
 func which() (string, error) {
-	cmd := exec.Command("which", "go")
+	cmd := exec.Command("which", goBinCmdSystem)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -264,7 +295,7 @@ func isBinGo(binName string) bool {
 }
 
 func getGoPath() (string, error) {
-	cmd := exec.Command("go", `env`, `GOPATH`)
+	cmd := exec.Command(goBinCmdSystem, `env`, `GOPATH`)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out

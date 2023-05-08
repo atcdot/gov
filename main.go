@@ -9,6 +9,7 @@ import (
 func main() {
 	command := cmd.NewCMD()
 
+	command.AddCommand(cmd.NewInitCmd())
 	command.AddCommand(cmd.NewGUICmd())
 	command.AddCommand(cmd.NewListCmd())
 	command.AddCommand(cmd.NewInstallCmd())
